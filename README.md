@@ -37,4 +37,4 @@ No final do jogo, o jogador precisará tomar uma decisão crítica através de b
 - [**Pedro R.**](https://github.com/pedro-niHiL)
 - [**Gustavo S.**](https://github.com/GUS2-SAN)
 - [**Theófilo P.**](https://github.com/the-theo)
-- [**Icalo B.**](https://github.com/JonasBrothers12)
+- [**Icaro B.**](https://github.com/JonasBrothers12)
