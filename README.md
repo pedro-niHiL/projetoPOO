@@ -25,6 +25,13 @@ No final do jogo, o jogador precisará tomar uma decisão crítica através de b
 - Sobreviva o maior tempo possível e descubra os segredos por trás da rebelião.
 - No final, tome a decisão final: destruir ou salvar o Núcleo.
 
+## Tecnologias usadas
+ - [Java](https://www.java.com/pt-BR/)
+ - [JavaFX](https://openjfx.io/)
+ - [IntelliJ Community](https://www.jetbrains.com/pt-br/idea/) 
+ - [Scene Builder](https://gluonhq.com/products/scene-builder/)
+
+
 ## Problemas a Serem Resolvidos em Ordem de Prioridade
 
 1. Mudar a lógica do jogador de um Canva criado em código (interna) para uma sprite animada de um boneco (externa) usando o SceneBuilder. A imagem por hora não importa, pode ser algo genérico enquanto a sprite original não fica pronta.
