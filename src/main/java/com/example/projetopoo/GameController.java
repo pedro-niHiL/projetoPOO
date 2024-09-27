@@ -2,7 +2,6 @@ package com.example.projetopoo;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 
 public class GameController {
 
@@ -40,7 +39,7 @@ public class GameController {
     }
 
     private void update(double deltaTime) {
-        player.update(deltaTime);
-        enemyManager.update(deltaTime, core);
+        player.update(deltaTime, core);  // Agora o jogador verifica a colisão com o núcleo
+        enemyManager.update(deltaTime, core, player);  // Atualiza inimigos com base no núcleo e no jogador
     }
 }

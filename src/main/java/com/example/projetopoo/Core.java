@@ -33,7 +33,7 @@ public class Core {
 
     private void drawHealthBar(GraphicsContext gc) {
         double barWidth = size;  // A largura da barra de vida será igual ao tamanho do núcleo
-        double barHeight = 10;   // Altura da barra de vida
+        double barHeight = 1.0/10 * size;   // Altura da barra de vida
         double healthPercentage = (double) health / 100.0;
 
         // Posição da barra de vida (acima do núcleo)

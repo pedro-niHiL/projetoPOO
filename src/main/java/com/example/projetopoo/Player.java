@@ -7,100 +7,120 @@ public class Player {
 
     private double x;
     private double y;
-    private final double size = 64; // Tamanho de cada quadro do sprite
+    private final double size = 64; // Tamanho do jogador
     private final double speed = 2;
     private boolean[] keys = new boolean[256];
+    private double health; // Vida do jogador
 
     private Image spriteSheet;
     private int currentFrame = 0;
-    private int frameCount = 4; // Número de quadros em cada linha da animação
-    private int idleFrame = 0; // Frame inicial para idle
-    private boolean isMoving = false; // Controla se o jogador está se movendo
-    private int spriteRow = 0; // Linha do sprite (0 = parado, 1 = andando, etc.)
+    private int frameCount = 4; // Número de quadros da animação
+    private int idleFrame = 0; // Frame quando parado
+    private boolean isMoving = false;
+    private int spriteRow = 0;
 
-    private int animationDelay = 2; // Controla a velocidade da animação
+    private int animationDelay = 2; // Velocidade da animação
     private int animationTimer = 0;
 
-    private double screenWidth; // Largura da tela
-    private double screenHeight; // Altura da tela
+    private double screenWidth;
+    private double screenHeight;
 
     public Player(double startX, double startY, double screenWidth, double screenHeight) {
         this.x = startX;
         this.y = startY;
-
-        // Dimensões da tela
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.health = 100; // Vida inicial
 
-        // Carrega o spritesheet do jogador
         this.spriteSheet = new Image(getClass().getResource("playersprite.png").toString());
     }
 
-    public void updateScreenSize(double newWidth, double newHeight) {
-        this.screenWidth = newWidth;
-        this.screenHeight = newHeight;
-    }
+    public void update(double deltaTime, Core core) {
+        isMoving = false;
 
+        double nextX = x;
+        double nextY = y;
 
-    public void update(double deltaTime) {
-        isMoving = false; // Reset no estado de movimento
-
-        // Verifica teclas pressionadas e movimenta o jogador
+        // Verifica teclas pressionadas e calcula a nova posição
         if (keys['W']) {
-            y -= speed;
+            nextY -= speed;
             isMoving = true;
         }
         if (keys['S']) {
-            y += speed;
+            nextY += speed;
             isMoving = true;
         }
         if (keys['A']) {
-            x -= speed;
+            nextX -= speed;
             isMoving = true;
         }
         if (keys['D']) {
-            x += speed;
+            nextX += speed;
             isMoving = true;
         }
 
         // Limita o movimento às bordas da tela
-        if (x < 0) {
-            x = 0;
-        }
-        if (x + size > screenWidth) {
-            x = screenWidth - size;
-        }
-        if (y < 0) {
-            y = 0;
-        }
-        // Ajuste no limite inferior, considerando a altura do sprite
-        if (y + size > screenHeight) {
-            y = screenHeight - size;
+        if (nextX < 0) nextX = 0;
+        if (nextX + size > screenWidth) nextX = screenWidth - size;
+        if (nextY < 0) nextY = 0;
+        if (nextY + size > screenHeight) nextY = screenHeight - size;
+
+        // Verifica colisão com o núcleo (impede o jogador de atravessar o núcleo)
+        if (!isCollidingWithCore(nextX, nextY, core)) {
+            x = nextX;
+            y = nextY;
         }
 
-        // Atualiza o estado da animação
+        // Atualiza a animação
         if (isMoving) {
-            spriteRow = 1; // Linha 1 para movimento
+            spriteRow = 1; // Linha de movimento
             animationTimer++;
             if (animationTimer >= animationDelay) {
                 currentFrame = (currentFrame + 1) % frameCount;
                 animationTimer = 0;
             }
         } else {
-            spriteRow = 0; // Linha 0 para parado (idle)
+            spriteRow = 0; // Linha idle
             currentFrame = idleFrame;
         }
     }
 
+    private boolean isCollidingWithCore(double nextX, double nextY, Core core) {
+        double coreX = core.getX();
+        double coreY = core.getY();
+        double coreSize = core.getSize();
+
+        // Verifica se o jogador está colidindo com o núcleo
+        boolean collidingX = nextX + size > coreX && nextX < coreX + coreSize;
+        boolean collidingY = nextY + size > coreY && nextY < coreY + coreSize;
+
+        return collidingX && collidingY;
+    }
 
     public void draw(GraphicsContext gc) {
-        gc.clearRect(0, 0, screenWidth, screenHeight); // Limpa a área do canvas
+        gc.clearRect(0, 0, screenWidth, screenHeight);
+        gc.drawImage(spriteSheet, currentFrame * size, spriteRow * size, size, size, x, y, size, size);
+    }
 
-        // Calcula a posição correta no spritesheet para o quadro atual
-        gc.drawImage(spriteSheet,
-                currentFrame * size, spriteRow * size, size, size,  // Fonte: (x, y, largura, altura)
-                x, y, size, size  // Destino: (x, y, largura, altura)
-        );
+    public void takeDamage(double damage) {
+        health -= damage;
+        if (health < 0) health = 0;
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getSize() {
+        return size;
     }
 
     public void setKeyPressed(int keyCode) {

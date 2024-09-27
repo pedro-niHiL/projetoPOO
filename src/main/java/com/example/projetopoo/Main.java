@@ -22,7 +22,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
-        primaryStage.setTitle("Nucle Defense");
+        primaryStage.setTitle("Nucleo Defense");
         primaryStage.setScene(scene);
         primaryStage.setWidth(screenWidth);
         primaryStage.setHeight(screenHeight);
