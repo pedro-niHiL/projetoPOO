@@ -1,24 +1,28 @@
 package com.example.projetopoo;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+import javafx.animation.AnimationTimer;
 
 public class GameLoop {
+    private final Runnable gameUpdate;
+    private AnimationTimer timer;
 
-    private final Timeline timeline;
-
-    public GameLoop(Runnable updateMethod, int fps) {
-        double interval = 1000.0 / fps; // Calcula o intervalo com base no FPS
-        timeline = new Timeline(new KeyFrame(Duration.millis(interval), e -> updateMethod.run()));
-        timeline.setCycleCount(Timeline.INDEFINITE);
+    public GameLoop(Runnable gameUpdate) {
+        this.gameUpdate = gameUpdate;
     }
 
     public void start() {
-        timeline.play();
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                gameUpdate.run();
+            }
+        };
+        timer.start();
     }
 
     public void stop() {
-        timeline.stop();
+        if (timer != null) {
+            timer.stop();
+        }
     }
 }

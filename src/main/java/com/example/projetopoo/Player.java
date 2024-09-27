@@ -8,7 +8,7 @@ public class Player {
     private double x;
     private double y;
     private final double size = 64; // Tamanho de cada quadro do sprite
-    private final double speed = 5;
+    private final double speed = 2;
     private boolean[] keys = new boolean[256];
 
     private Image spriteSheet;
@@ -18,7 +18,7 @@ public class Player {
     private boolean isMoving = false; // Controla se o jogador está se movendo
     private int spriteRow = 0; // Linha do sprite (0 = parado, 1 = andando, etc.)
 
-    private int animationDelay = 5; // Controla a velocidade da animação
+    private int animationDelay = 2; // Controla a velocidade da animação
     private int animationTimer = 0;
 
     private double screenWidth; // Largura da tela

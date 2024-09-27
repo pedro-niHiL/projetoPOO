@@ -7,7 +7,7 @@ public class Enemy {
     private double x;
     private double y;
     private double size = 50;
-    private double speed = 2;
+    private double speed = 1;
 
     public Enemy(double startX, double startY) {
         this.x = startX;

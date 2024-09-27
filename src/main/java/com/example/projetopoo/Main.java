@@ -11,30 +11,30 @@ import javafx.scene.canvas.Canvas;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
-        // Obtém as dimensões da tela
+    public void start(Stage primaryStage) throws Exception {
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
 
-        // Cria um Canvas e AnchorPane diretamente, sem FXML
+        AnchorPane root = new AnchorPane();
         Canvas gameCanvas = new Canvas(screenWidth, screenHeight);
-        AnchorPane root = new AnchorPane(gameCanvas);
+        root.getChildren().add(gameCanvas);
 
-        // Cria uma cena e ajusta as dimensões da janela
         Scene scene = new Scene(root, screenWidth, screenHeight);
-        primaryStage.setTitle("Movimentação do Jogador");
+
+        primaryStage.setTitle("Nucle Defense");
         primaryStage.setScene(scene);
+        primaryStage.setWidth(screenWidth);
+        primaryStage.setHeight(screenHeight);
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        // Inicializa o controlador manualmente
+        // Inicializa o controlador principal do jogo
         GameController controller = new GameController(gameCanvas);
-        controller.setupKeyHandling(scene);
+        controller.initialize(scene);
 
-        // Garante que o Canvas receba o foco para capturar os eventos de teclado
-        gameCanvas.setFocusTraversable(true);
-        gameCanvas.requestFocus();
+        // Garante que a cena tenha o foco
+        scene.getRoot().requestFocus();
     }
 
     public static void main(String[] args) {
