@@ -1,41 +1,40 @@
 package com.example.projetopoo;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.Canvas;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("game.fxml"));
-        Scene scene = new Scene(loader.load());
-
+    public void start(Stage primaryStage) {
         // Obtém as dimensões da tela
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
 
-        // Define o tamanho da janela com base na resolução do monitor
+        // Cria um Canvas e AnchorPane diretamente, sem FXML
+        Canvas gameCanvas = new Canvas(screenWidth, screenHeight);
+        AnchorPane root = new AnchorPane(gameCanvas);
+
+        // Cria uma cena e ajusta as dimensões da janela
+        Scene scene = new Scene(root, screenWidth, screenHeight);
         primaryStage.setTitle("Movimentação do Jogador");
         primaryStage.setScene(scene);
-        primaryStage.setWidth(screenWidth);
-        primaryStage.setHeight(screenHeight);
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        // Acessa o controlador e registra o tratamento de eventos de teclado
-        GameController controller = loader.getController();
+        // Inicializa o controlador manualmente
+        GameController controller = new GameController(gameCanvas);
         controller.setupKeyHandling(scene);
 
-        // Redimensiona o Canvas para o tamanho da tela
-        controller.resizeCanvas(screenWidth, screenHeight);
-
-        // Garante que a cena tenha o foco
-        scene.getRoot().requestFocus();
+        // Garante que o Canvas receba o foco para capturar os eventos de teclado
+        gameCanvas.setFocusTraversable(true);
+        gameCanvas.requestFocus();
     }
 
     public static void main(String[] args) {
