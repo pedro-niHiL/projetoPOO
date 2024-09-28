@@ -14,12 +14,14 @@ public class Player {
 
     private Image spriteSheet;
     private int currentFrame = 0;
-    private int frameCount = 4; // Número de quadros da animação
+    private int frameCount = 6; // Número de quadros da animação
     private int idleFrame = 0; // Frame quando parado
     private boolean isMoving = false;
-    private int spriteRow = 0;
+    private int spriteRow = 0; // Linha do spritesheet (para diferentes direções)
+    private int direction = 0; // 0 = Down, 1 = Right, 2 = Up
+    private boolean facingLeft = false; // Flag para saber se está virado para a esquerda
 
-    private int animationDelay = 2; // Velocidade da animação
+    private int animationDelay = 10; // Ajuste de tempo da animação
     private int animationTimer = 0;
 
     private double screenWidth;
@@ -32,30 +34,35 @@ public class Player {
         this.screenHeight = screenHeight;
         this.health = 100; // Vida inicial
 
-        this.spriteSheet = new Image(getClass().getResource("playersprite.png").toString());
+        this.spriteSheet = new Image(getClass().getResource("spriteSeetPlayer.png").toString()); // Novo spritesheet
     }
 
     public void update(double deltaTime, Core core) {
         isMoving = false;
-
         double nextX = x;
         double nextY = y;
 
-        // Verifica teclas pressionadas e calcula a nova posição
+        // Verifica teclas pressionadas e calcula a nova posição e direção
         if (keys['W']) {
             nextY -= speed;
+            direction = 2; // Up
             isMoving = true;
         }
         if (keys['S']) {
             nextY += speed;
+            direction = 0; // Down
             isMoving = true;
         }
         if (keys['A']) {
             nextX -= speed;
+            direction = 1; // Left/Right (compartilha linha)
+            facingLeft = true; // Virado para a esquerda
             isMoving = true;
         }
         if (keys['D']) {
             nextX += speed;
+            direction = 1; // Left/Right
+            facingLeft = false; // Virado para a direita
             isMoving = true;
         }
 
@@ -65,7 +72,7 @@ public class Player {
         if (nextY < 0) nextY = 0;
         if (nextY + size > screenHeight) nextY = screenHeight - size;
 
-        // Verifica colisão com o núcleo (impede o jogador de atravessar o núcleo)
+        // Verifica colisão com o núcleo
         if (!isCollidingWithCore(nextX, nextY, core)) {
             x = nextX;
             y = nextY;
@@ -73,14 +80,14 @@ public class Player {
 
         // Atualiza a animação
         if (isMoving) {
-            spriteRow = 1; // Linha de movimento
+            spriteRow = 3 + direction; // Linhas 3, 4, 5 para movimentação
             animationTimer++;
             if (animationTimer >= animationDelay) {
                 currentFrame = (currentFrame + 1) % frameCount;
                 animationTimer = 0;
             }
         } else {
-            spriteRow = 0; // Linha idle
+            spriteRow = direction; // Linhas 0, 1, 2 para idle
             currentFrame = idleFrame;
         }
     }
@@ -90,7 +97,6 @@ public class Player {
         double coreY = core.getY();
         double coreSize = core.getSize();
 
-        // Verifica se o jogador está colidindo com o núcleo
         boolean collidingX = nextX + size > coreX && nextX < coreX + coreSize;
         boolean collidingY = nextY + size > coreY && nextY < coreY + coreSize;
 
@@ -99,7 +105,18 @@ public class Player {
 
     public void draw(GraphicsContext gc) {
         gc.clearRect(0, 0, screenWidth, screenHeight);
-        gc.drawImage(spriteSheet, currentFrame * size, spriteRow * size, size, size, x, y, size, size);
+
+        // Se o personagem estiver virado para a esquerda, desenha invertido
+        if (facingLeft) {
+            gc.save(); // Salva o estado atual do GraphicsContext
+            gc.translate(x + size, y); // Move para a posição do personagem
+            gc.scale(-1, 1); // Inverte a escala no eixo X para espelhar a imagem
+            gc.drawImage(spriteSheet, currentFrame * size, spriteRow * size, size, size, 0, 0, size, size);
+            gc.restore(); // Restaura o estado original do GraphicsContext
+        } else {
+            // Desenha normalmente para a direita
+            gc.drawImage(spriteSheet, currentFrame * size, spriteRow * size, size, size, x, y, size, size);
+        }
     }
 
     public void takeDamage(double damage) {
