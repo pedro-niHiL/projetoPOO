@@ -47,15 +47,23 @@ public class RenderEngine {
         double maxHealth = 100;
         double currentHealth = player.getHealth();
         double barWidth = 200;
-        double barHeight = 20;
+        double barHeight = 15;
         double filledBarWidth = (currentHealth / maxHealth) * barWidth;
 
+        // Desenha a barra de fundo (vida perdida)
         gc.setFill(Color.RED);
-        gc.fillRect(10, 10, barWidth, barHeight);
+        gc.fillRect(10, 20, barWidth, barHeight);
 
+        // Desenha a barra de vida preenchida (vida restante)
         gc.setFill(Color.GREEN);
-        gc.fillRect(10, 10, filledBarWidth, barHeight);
+        gc.fillRect(10, 20, filledBarWidth, barHeight);
+
+        // Desenha a borda preta ao redor da barra
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2); // Define a largura da borda
+        gc.strokeRect(10, 20, barWidth, barHeight); // Borda ao redor da barra
     }
+
 
     private void drawGameTime(GraphicsContext gc, double gameTime) {
         gc.setFont(new Font("Arial", 20));
@@ -68,9 +76,9 @@ public class RenderEngine {
 
         // Defina as coordenadas para o texto (ajustando para que apareça no canto superior direito)
         double textX = gameCanvas.getWidth() - 80; // Posição X ajustada
-        double textY = 40; // Posição Y
+        double textY = 20; // Posição Y
 
-        // Desenha o texto do tempo em branco
+        // Desenha o texto do tempo em vermelho
         gc.setFill(Color.RED);
         gc.fillText(timeText, textX, textY);
     }
