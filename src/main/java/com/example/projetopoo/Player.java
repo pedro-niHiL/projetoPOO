@@ -34,7 +34,7 @@ public class Player {
         this.screenHeight = screenHeight;
         this.health = 100; // Vida inicial
 
-        this.spriteSheet = new Image(getClass().getResource("spriteSeetPlayer.png").toString()); // Novo spritesheet
+        this.spriteSheet = new Image(getClass().getResource("spriteSheetPlayer.png").toString()); // Novo spritesheet
     }
 
     public void update(double deltaTime, Core core) {
