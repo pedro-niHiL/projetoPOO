@@ -18,27 +18,21 @@ public class RenderEngine {
         this.core = core;
         this.enemyManager = enemyManager;
 
-        // Carregar a imagem de fundo
-        this.backgroundImage = new Image(getClass().getResource("cenario_600x375.png").toExternalForm());
-
+        this.backgroundImage = new Image(getClass().getResource("cenarioMaior.png").toExternalForm());
     }
 
     public void render() {
         GraphicsContext gc = gameCanvas.getGraphicsContext2D();
 
-        // Desenha a imagem de fundo
         gc.drawImage(backgroundImage, 0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
-        // Desenha os elementos do jogo
         player.draw(gc);
         core.draw(gc);
 
-        // Desenha os inimigos
         for (Enemy enemy : enemyManager.getEnemies()) {
             enemy.draw(gc);
         }
 
-        // Desenha a barra de vida do jogador
         drawHealthBar(gc);
     }
 
@@ -49,11 +43,16 @@ public class RenderEngine {
         double barHeight = 20;
         double filledBarWidth = (currentHealth / maxHealth) * barWidth;
 
-        // Desenha a barra de vida
-        gc.setFill(Color.RED); // Fundo da barra (vida perdida)
+        gc.setFill(Color.RED);
         gc.fillRect(10, 10, barWidth, barHeight);
 
-        gc.setFill(Color.GREEN); // Parte preenchida (vida restante)
+        gc.setFill(Color.GREEN);
         gc.fillRect(10, 10, filledBarWidth, barHeight);
+    }
+
+    public void updateGameObjects(Player player, Core core, EnemyManager enemyManager) {
+        this.player = player;
+        this.core = core;
+        this.enemyManager = enemyManager;
     }
 }

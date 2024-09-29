@@ -9,7 +9,7 @@ public class Player {
     private double y;
     private final double size = 64; // Tamanho do jogador
     private final double speed = 2;
-    private boolean[] keys = new boolean[256];
+    private boolean[] keys = new boolean[256];  // Array de teclas
     private double health; // Vida do jogador
 
     private Image spriteSheet;
@@ -122,6 +122,10 @@ public class Player {
     public void takeDamage(double damage) {
         health -= damage;
         if (health < 0) health = 0;
+    }
+
+    public void resetHealth() {
+        this.health = 100;
     }
 
     public double getHealth() {
