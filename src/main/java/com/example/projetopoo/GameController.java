@@ -15,7 +15,7 @@ public class GameController {
     private RenderEngine renderEngine;
     private Stage primaryStage;
 
-    public GameController(Canvas gameCanvas, Stage primaryStage) {
+    public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
         this.primaryStage = primaryStage;
     }

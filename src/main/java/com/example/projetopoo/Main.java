@@ -26,8 +26,8 @@ public class Main extends Application {
         primaryStage.setResizable(false);  // Desabilita o redimensionamento
         primaryStage.show();
 
-        // Inicializa o controlador principal
-        GameController controller = new GameController(gameCanvas, primaryStage);
+        // Inicializa o controlador principal do jogo
+        GameController controller = new GameController(gameCanvas);
         controller.initialize(scene);
 
         // Garante que a cena tenha o foco
