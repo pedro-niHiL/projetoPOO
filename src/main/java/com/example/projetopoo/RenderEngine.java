@@ -2,6 +2,7 @@ package com.example.projetopoo;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class RenderEngine {
@@ -9,21 +10,30 @@ public class RenderEngine {
     private Player player;
     private Core core;
     private EnemyManager enemyManager;
+    private Image backgroundImage;
 
     public RenderEngine(Canvas gameCanvas, Player player, Core core, EnemyManager enemyManager) {
         this.gameCanvas = gameCanvas;
         this.player = player;
         this.core = core;
         this.enemyManager = enemyManager;
+
+        // Carregar a imagem de fundo
+        this.backgroundImage = new Image(getClass().getResource("cenario_600x375.png").toExternalForm());
+
     }
 
     public void render() {
         GraphicsContext gc = gameCanvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
+        // Desenha a imagem de fundo
+        gc.drawImage(backgroundImage, 0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
+
+        // Desenha os elementos do jogo
         player.draw(gc);
         core.draw(gc);
 
+        // Desenha os inimigos
         for (Enemy enemy : enemyManager.getEnemies()) {
             enemy.draw(gc);
         }
