@@ -1,46 +1,72 @@
 package com.example.projetopoo;
 
-import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Stage;
 
 public class GameController {
 
-    @FXML
     private Canvas gameCanvas;
-
     private Player player;
+    private Core core;
     private GameLoop gameLoop;
-    private int fps = 60;  // Definindo o FPS aqui
+    private PlayerController playerController;
+    private EnemyManager enemyManager;
+    private RenderEngine renderEngine;
+    private Stage primaryStage;
 
-    @FXML
-    public void initialize() {
-        player = new Player(100, 100);
-        GraphicsContext gc = gameCanvas.getGraphicsContext2D();
+    public GameController(Canvas gameCanvas) {
+        this.gameCanvas = gameCanvas;
+        this.primaryStage = primaryStage;
+    }
 
-        // Define o loop de atualização com o FPS configurado
+    public void initialize(Scene scene) {
+        double canvasWidth = gameCanvas.getWidth();
+        double canvasHeight = gameCanvas.getHeight();
+
+        // Inicializa o jogo
+        player = new Player(100, 100, canvasWidth, canvasHeight);
+        core = new Core(canvasWidth, canvasHeight);
+        enemyManager = new EnemyManager(canvasWidth, canvasHeight);
+        renderEngine = new RenderEngine(gameCanvas, player, core, enemyManager);
+
+        // Configura eventos de tecla
+        playerController = new PlayerController(player);
+        playerController.setupKeyHandling(scene);
+
+        // Inicia o loop do jogo
         gameLoop = new GameLoop(() -> {
-            player.update();
-            render(gc);
-        }, fps);
-
-        // Começa o game loop
+            update(1.0 / 60);
+            renderEngine.render();
+            checkGameOver();
+        });
         gameLoop.start();
 
-        // Garante que o canvas tenha o foco para receber eventos de teclado
-        gameCanvas.setFocusTraversable(true);
-        gameCanvas.requestFocus();
+        // Garante que o Canvas tenha o foco
+        scene.getRoot().requestFocus();
     }
 
-    public void setupKeyHandling(Scene scene) {
-        // Captura eventos de teclado diretamente na cena
-        scene.setOnKeyPressed(event -> player.setKeyPressed(event.getCode().getCode()));
-        scene.setOnKeyReleased(event -> player.setKeyReleased(event.getCode().getCode()));
+    private void update(double deltaTime) {
+        player.update(deltaTime, core);
+        enemyManager.update(deltaTime, core, player);
     }
 
-    private void render(GraphicsContext gc) {
-        gc.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
-        player.draw(gc);
+    private void checkGameOver() {
+        // Verifica se o jogador ou núcleo perdeu toda a vida
+        if (player.getHealth() <= 0 || core.getHealth() <= 0) {
+            gameLoop.stop();
+            restartGame();  // Reinicia o jogo sem alterar a cena
+        }
+    }
+
+    // Método de reinício do jogo sem alterar a cena ou o foco
+    public void restartGame() {
+        // Reinicializa o estado do jogo
+        player.resetHealth();
+        core.resetHealth();
+        enemyManager.clearEnemies();
+
+        // Reinicia o loop de jogo
+        gameLoop.start();
     }
 }
