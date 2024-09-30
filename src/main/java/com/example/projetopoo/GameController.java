@@ -15,8 +15,6 @@ public class GameController {
     private RenderEngine renderEngine;
     private Stage primaryStage;
 
-    private double gameTime; // Adiciona o campo de tempo de jogo
-
     public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
         this.primaryStage = primaryStage;
@@ -36,14 +34,10 @@ public class GameController {
         playerController = new PlayerController(player);
         playerController.setupKeyHandling(scene);
 
-
-        gameTime = 0; // Inicia o tempo de jogo
-
         // Inicia o loop do jogo
         gameLoop = new GameLoop(() -> {
             update(1.0 / 60);
-            renderEngine.render(gameTime); // Passa o tempo para ser renderizado
-
+            renderEngine.render();
             checkGameOver();
         });
         gameLoop.start();
@@ -55,8 +49,6 @@ public class GameController {
     private void update(double deltaTime) {
         player.update(deltaTime, core);
         enemyManager.update(deltaTime, core, player);
-
-        gameTime += deltaTime; // Incrementa o tempo de jogo
     }
 
     private void checkGameOver() {
@@ -67,8 +59,6 @@ public class GameController {
         }
     }
 
-=======
- 
     // Método de reinício do jogo sem alterar a cena ou o foco
     public void restartGame() {
         // Reinicializa o estado do jogo
@@ -76,12 +66,7 @@ public class GameController {
         core.resetHealth();
         enemyManager.clearEnemies();
 
-
-        gameTime = 0; // Reinicia o tempo de jogo
-
         // Reinicia o loop de jogo
         gameLoop.start();
-
-
     }
 }
