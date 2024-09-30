@@ -42,6 +42,5 @@ No final do jogo, o jogador precisará tomar uma decisão crítica através de b
 ## Equipe
 
 - [**Pedro R.**](https://github.com/pedro-niHiL)
-- [**Gustavo S.**](https://github.com/GUS2-SAN)
-- [**Theófilo P.**](https://github.com/the-theo)
+- [**Augusto S.**](https://github.com/GUS2-SAN)
 - [**Icaro B.**](https://github.com/JonasBrothers12)
