@@ -14,6 +14,8 @@ public class GameController {
     private RenderEngine renderEngine;
 
 
+    private double gameTime; // Adiciona o campo de tempo de jogo
+
     public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
     }
@@ -31,17 +33,45 @@ public class GameController {
         playerController = new PlayerController(player);
         playerController.setupKeyHandling(scene);
 
+        gameTime = 0; // Inicia o tempo de jogo
 
-        // Inicializa o loop do jogo
+        // Inicia o loop do jogo
         gameLoop = new GameLoop(() -> {
-            update(1.0 / 60); // FPS 60
-            renderEngine.render();
+            update(1.0 / 60);
+            renderEngine.render(gameTime); // Passa o tempo para ser renderizado
+            checkGameOver();
         });
         gameLoop.start();
+
+        // Garante que o Canvas tenha o foco
+        scene.getRoot().requestFocus();
     }
 
-    private void  update(double deltaTime) {
-        player.update(deltaTime, core);  // Agora o jogador verifica a colisão com o núcleo
-        enemyManager.update(deltaTime, core, player);  // Atualiza inimigos com base no núcleo e no jogado
+    private void update(double deltaTime) {
+        player.update(deltaTime, core);
+        enemyManager.update(deltaTime, core, player);
+        gameTime += deltaTime; // Incrementa o tempo de jogo
+    }
+
+    private void checkGameOver() {
+        // Verifica se o jogador ou núcleo perdeu toda a vida
+        if (player.getHealth() <= 0 || core.getHealth() <= 0) {
+            gameLoop.stop();
+            restartGame();  // Reinicia o jogo sem alterar a cena
+        }
+    }
+
+    // Método de reinício do jogo sem alterar a cena ou o foco
+    public void restartGame() {
+        // Reinicializa o estado do jogo
+        player.resetHealth();
+        core.resetHealth();
+        enemyManager.clearEnemies();
+
+        gameTime = 0; // Reinicia o tempo de jogo
+
+        // Reinicia o loop de jogo
+        gameLoop.start();
+
     }
 }
