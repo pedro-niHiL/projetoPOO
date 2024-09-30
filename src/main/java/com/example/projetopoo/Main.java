@@ -3,27 +3,30 @@ package com.example.projetopoo;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 
 public class Main extends Application {
 
-    private static final double SCENE_WIDTH = 800;
-    private static final double SCENE_HEIGHT = 600;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
 
-        // Define o tamanho fixo do Canvas
         AnchorPane root = new AnchorPane();
-        Canvas gameCanvas = new Canvas(SCENE_WIDTH, SCENE_HEIGHT);
+        Canvas gameCanvas = new Canvas(screenWidth, screenHeight);
         root.getChildren().add(gameCanvas);
 
-        Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
+        Scene scene = new Scene(root, screenWidth, screenHeight);
 
         primaryStage.setTitle("Nucleo Defense");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);  // Desabilita o redimensionamento
+        primaryStage.setWidth(screenWidth);
+        primaryStage.setHeight(screenHeight);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         // Inicializa o controlador principal do jogo
