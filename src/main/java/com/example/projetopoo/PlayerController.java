@@ -1,10 +1,8 @@
 package com.example.projetopoo;
 
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 
 public class PlayerController {
-
     private Player player;
 
     public PlayerController(Player player) {
@@ -12,18 +10,7 @@ public class PlayerController {
     }
 
     public void setupKeyHandling(Scene scene) {
-        scene.setOnKeyPressed(event -> {
-            KeyCode code = event.getCode();
-            if (code.isLetterKey()) {
-                player.setKeyPressed(code.getCode());
-            }
-        });
-
-        scene.setOnKeyReleased(event -> {
-            KeyCode code = event.getCode();
-            if (code.isLetterKey()) {
-                player.setKeyReleased(code.getCode());
-            }
-        });
+        scene.setOnKeyPressed(event -> player.setKeyPressed(event.getCode().getCode()));
+        scene.setOnKeyReleased(event -> player.setKeyReleased(event.getCode().getCode()));
     }
 }

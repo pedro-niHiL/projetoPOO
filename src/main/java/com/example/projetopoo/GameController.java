@@ -2,7 +2,6 @@ package com.example.projetopoo;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.stage.Stage;
 
 public class GameController {
 
@@ -13,26 +12,24 @@ public class GameController {
     private PlayerController playerController;
     private EnemyManager enemyManager;
     private RenderEngine renderEngine;
-    private Stage primaryStage;
+
 
     private double gameTime; // Adiciona o campo de tempo de jogo
 
     public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
-        this.primaryStage = primaryStage;
     }
 
     public void initialize(Scene scene) {
         double canvasWidth = gameCanvas.getWidth();
         double canvasHeight = gameCanvas.getHeight();
 
-        // Inicializa o jogo
         player = new Player(100, 100, canvasWidth, canvasHeight);
         core = new Core(canvasWidth, canvasHeight);
         enemyManager = new EnemyManager(canvasWidth, canvasHeight);
         renderEngine = new RenderEngine(gameCanvas, player, core, enemyManager);
 
-        // Configura eventos de tecla
+        // Setup para controle do jogador
         playerController = new PlayerController(player);
         playerController.setupKeyHandling(scene);
 
@@ -75,5 +72,6 @@ public class GameController {
 
         // Reinicia o loop de jogo
         gameLoop.start();
+
     }
 }

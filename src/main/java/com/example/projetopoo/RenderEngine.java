@@ -6,31 +6,35 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.ArrayList;
+
 public class RenderEngine {
     private Canvas gameCanvas;
     private Player player;
     private Core core;
     private EnemyManager enemyManager;
-    private Image backgroundImage;
 
     public RenderEngine(Canvas gameCanvas, Player player, Core core, EnemyManager enemyManager) {
         this.gameCanvas = gameCanvas;
         this.player = player;
         this.core = core;
         this.enemyManager = enemyManager;
-
-        this.backgroundImage = new Image(getClass().getResource("cenarioMaior.png").toExternalForm());
     }
 
     public void render(double gameTime) {
         GraphicsContext gc = gameCanvas.getGraphicsContext2D();
 
+
         // Desenha a imagem de fundo
         gc.drawImage(backgroundImage, 0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
 
+
         // Desenha o jogador, núcleo e inimigos
         player.draw(gc);
+        gc.drawImage(new Image(getClass().getResource("cenario maior.png").toString()),0,0,gameCanvas.getWidth(),gameCanvas.getHeight());
         core.draw(gc);
+
+
 
         for (Enemy enemy : enemyManager.getEnemies()) {
             enemy.draw(gc);
@@ -41,6 +45,7 @@ public class RenderEngine {
 
         // Desenha o tempo de jogo
         drawGameTime(gc, gameTime);
+
     }
 
     private void drawHealthBar(GraphicsContext gc) {
@@ -88,4 +93,5 @@ public class RenderEngine {
         this.core = core;
         this.enemyManager = enemyManager;
     }
+
 }
