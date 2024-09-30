@@ -1,7 +1,10 @@
 package com.example.projetopoo;
 
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+
+import java.util.ArrayList;
 
 public class Enemy {
     private double x;
@@ -9,12 +12,13 @@ public class Enemy {
     private double size;
     private double speed = 1;
 
-    private Image spriteSheet;
+    protected Image spriteSheet;
     private int currentFrame = 0;
     private int frameCount = 4;  // Assumindo 4 frames de animação
     private int spriteRow = 0;  // Primeira linha do spritesheet
     private int animationDelay = 10;
     private int animationTimer = 0;
+    protected Canvas gameCanvas = new Canvas();
 
     private boolean facingLeft = false;
 
@@ -25,6 +29,14 @@ public class Enemy {
 
         // Carrega o spritesheet do inimigo
         this.spriteSheet = new Image(getClass().getResource("spriteSheetEnemy.png").toString());
+    }
+
+    public void shoot(){
+
+    }
+
+    public void updateProjectiles() {
+
     }
 
     public void moveTowards(double targetX, double targetY) {
@@ -72,5 +84,12 @@ public class Enemy {
 
     public double getSize() {
         return size;
+    }
+
+    public void shoot(double x, double y) {
+    }
+
+    public ArrayList<Projectile> getProjectiles() {
+        return null;
     }
 }

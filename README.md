@@ -39,11 +39,9 @@ No final do jogo, o jogador precisará tomar uma decisão crítica através de b
 3. Implementar projetéis que podem ser atirados pelo jogador e têm interação com os inimigos (mata instantaneamente)
 4. Implementar o núcleo e sua interação com os inimigos
 
-## Equipe:
+## Equipe
 
 - [**Pedro R.**](https://github.com/pedro-niHiL)
-- [**Augusto S.**](https://github.com/GUS2-SAN)
+- [**Gustavo S.**](https://github.com/GUS2-SAN)
+- [**Theófilo P.**](https://github.com/the-theo)
 - [**Icaro B.**](https://github.com/JonasBrothers12)
-- [**Lucas A.**](https://github.com/LucasAndrey20)
--
--
