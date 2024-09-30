@@ -2,6 +2,7 @@ package com.example.projetopoo;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.stage.Stage;
 
 public class GameController {
 
@@ -12,26 +13,29 @@ public class GameController {
     private PlayerController playerController;
     private EnemyManager enemyManager;
     private RenderEngine renderEngine;
-
+    private Stage primaryStage;
 
     private double gameTime; // Adiciona o campo de tempo de jogo
 
     public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
+        this.primaryStage = primaryStage;
     }
 
     public void initialize(Scene scene) {
         double canvasWidth = gameCanvas.getWidth();
         double canvasHeight = gameCanvas.getHeight();
 
+        // Inicializa o jogo
         player = new Player(100, 100, canvasWidth, canvasHeight);
         core = new Core(canvasWidth, canvasHeight);
         enemyManager = new EnemyManager(canvasWidth, canvasHeight);
         renderEngine = new RenderEngine(gameCanvas, player, core, enemyManager);
 
-        // Setup para controle do jogador
+        // Configura eventos de tecla
         playerController = new PlayerController(player);
         playerController.setupKeyHandling(scene);
+
 
         gameTime = 0; // Inicia o tempo de jogo
 
@@ -39,6 +43,7 @@ public class GameController {
         gameLoop = new GameLoop(() -> {
             update(1.0 / 60);
             renderEngine.render(gameTime); // Passa o tempo para ser renderizado
+
             checkGameOver();
         });
         gameLoop.start();
@@ -50,6 +55,7 @@ public class GameController {
     private void update(double deltaTime) {
         player.update(deltaTime, core);
         enemyManager.update(deltaTime, core, player);
+
         gameTime += deltaTime; // Incrementa o tempo de jogo
     }
 
@@ -60,6 +66,7 @@ public class GameController {
             restartGame();  // Reinicia o jogo sem alterar a cena
         }
     }
+
 
     // Método de reinício do jogo sem alterar a cena ou o foco
     public void restartGame() {
@@ -72,6 +79,5 @@ public class GameController {
 
         // Reinicia o loop de jogo
         gameLoop.start();
-
     }
 }
