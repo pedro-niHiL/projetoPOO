@@ -5,50 +5,65 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Core {
-
-    //Coordenadas do núcleo
     private double x;
     private double y;
-
-    //Tamanho e quantidade de vida do núcleo
-    private double size = 64;
+    private double size = 100;
     private int health = 100;
-    private Image coreImage;
+    private Image spritesheet;
+    private int currentFrame = 0;
+    private int frameCount = 6;
+    private double frameWidth;
+    private double frameHeight;
+    private long lastFrameTime;
+    private long frameDuration = 100_000_000; // 100ms
 
     public Core(double screenWidth, double screenHeight) {
         updatePosition(screenWidth, screenHeight);
-        // Carrega a imagem do núcleo
-        this.coreImage = new Image(getClass().getResource("core.png").toString());
+        loadSpritesheet();
+        lastFrameTime = System.nanoTime();
+    }
+
+    private void loadSpritesheet() {
+        this.spritesheet = new Image(getClass().getResource("coreSpritesheet.png").toString());
+        this.frameWidth = spritesheet.getWidth() / frameCount;
+        this.frameHeight = size; // Use only the first row (64px height)
     }
 
     public void updatePosition(double screenWidth, double screenHeight) {
-        // Posiciona o núcleo no centro da tela
         this.x = (screenWidth - size) / 2;
         this.y = (screenHeight - size) / 2 + 50;
     }
 
     public void draw(GraphicsContext gc) {
-        // Desenha o núcleo
-        gc.drawImage(coreImage, x, y, size, size);
+        updateAnimation();
 
-        // Desenha a barra de vida acima do núcleo
+        double srcX = currentFrame * frameWidth;
+        double srcY = 0; // Always use the first row
+
+        gc.drawImage(spritesheet, srcX, srcY, frameWidth, frameHeight, x, y, size, size);
+
         drawHealthBar(gc);
     }
 
+    private void updateAnimation() {
+        long currentTime = System.nanoTime();
+        if (currentTime - lastFrameTime > frameDuration) {
+            currentFrame = (currentFrame + 1) % frameCount;
+            lastFrameTime = currentTime;
+        }
+    }
+
     private void drawHealthBar(GraphicsContext gc) {
-        double barWidth = size;  // A largura da barra de vida será igual ao tamanho do núcleo
-        double barHeight = 1.0/10 * size;   // Altura da barra de vida
+        double barWidth = size;
+        double barHeight = 1.0/10 * size;
         double healthPercentage = (double) health / 100.0;
 
-        // Posição da barra de vida (acima do núcleo)
         double barX = x;
-        double barY = y - barHeight - 5;  // 5px acima do núcleo
+        double barY = y - barHeight - 5;
 
-        // Desenha o contorno da barra de vida
         gc.setStroke(Color.BLACK);
         gc.strokeRect(barX, barY, barWidth, barHeight);
 
-        // Desenha a barra de vida preenchida
         gc.setFill(Color.RED);
         gc.fillRect(barX, barY, barWidth * healthPercentage, barHeight);
     }
@@ -65,6 +80,8 @@ public class Core {
         return (enemyX + enemySize > x && enemyX < x + size &&
                 enemyY + enemySize > y && enemyY < y + size);
     }
+
+    // Getters and other methods remain the same
 
     public int getHealth() {
         return health;
