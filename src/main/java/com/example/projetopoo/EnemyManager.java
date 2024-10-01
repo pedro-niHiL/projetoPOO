@@ -35,13 +35,13 @@ public class EnemyManager {
 
         for (Enemy enemy : enemies) {
             enemy.moveTowards(core.getX() + core.getSize() / 2, core.getY() + core.getSize() / 2);
-            enemy.shoot(core.getX(), core.getY());
             enemy.updateProjectiles();
 
             // Verifica colisão com o núcleo
             double dxCore = (core.getX() + core.getSize() / 2) - (enemy.getX() + enemy.getSize() / 2);
             double dyCore = (core.getY() + core.getSize() / 2) - (enemy.getY() + enemy.getSize() / 2);
             double distanceToCore = Math.sqrt(dxCore * dxCore + dyCore * dyCore);
+            if (distanceToCore == 200){enemy.shoot(core.getX(), core.getY());} // Para inimigos atiradores
             double coreCollisionDistance = (core.getSize() / 2) + (enemy.getSize() / 2);
 
             if (distanceToCore < coreCollisionDistance) {
@@ -111,6 +111,7 @@ public class EnemyManager {
     }
 
     private Enemy createRandomEnemy() {
+        final double adjustY = 50;
         double startX = 0, startY = 0;
         double enemySize = 64;  // Tamanho do inimigo
 
@@ -118,20 +119,20 @@ public class EnemyManager {
 
         switch (door) {
             case 0: // Porta de cima
-                startX = screenWidth / 2 - enemySize / 2 - (screenWidth / 8) * random.nextInt(-1, 2);
-                startY = 0 - enemySize / 2;
+                startX = screenWidth / 2 - enemySize / 2;
+                startY = 0 - enemySize + adjustY*3;
                 break;
             case 1: // Porta de baixo
-                startX = screenWidth / 2 - enemySize / 2 - (screenWidth / 8) * random.nextInt(-1, 2);
-                startY = screenHeight - enemySize / 2;
+                startX = screenWidth / 2 - enemySize / 2;
+                startY = screenHeight;
                 break;
             case 2: // Porta da esquerda
-                startX = 0 - enemySize / 2;
-                startY = screenHeight / 2 - enemySize / 2 - (screenHeight / 8) * random.nextInt(-1, 2);
+                startX = 0 - enemySize;
+                startY = screenHeight / 2 - enemySize / 2 + adjustY;
                 break;
             case 3: // Porta da direita
-                startX = screenWidth - enemySize / 2;
-                startY = screenHeight / 2 - enemySize / 2 - (screenHeight / 8) * random.nextInt(-1, 2);
+                startX = screenWidth;
+                startY = screenHeight / 2 - enemySize / 2 + adjustY;
                 break;
         }
 
@@ -139,28 +140,8 @@ public class EnemyManager {
 
         if (type == 0) {
             return new Enemy(startX, startY, enemySize);
-        } else if (type == 1) {
-            switch (door) {
-                case 0: // Porta de cima
-                    startX = screenWidth / 2 - enemySize / 2 - (screenWidth / 16) * random.nextInt(-1, 2);
-                    startY = 0 - enemySize / 2 + 200;
-                    break;
-                case 1: // Porta de baixo
-                    startX = screenWidth / 2 - enemySize / 2 - (screenWidth / 16) * random.nextInt(-1, 2);
-                    startY = screenHeight - enemySize / 2 - 200;
-                    break;
-                case 2: // Porta da esquerda
-                    startX = 0 - enemySize / 2 + 200;
-                    startY = screenHeight / 2 - enemySize / 2 - (screenHeight / 16) * random.nextInt(-1, 2);
-                    break;
-                case 3: // Porta da direita
-                    startX = screenWidth - enemySize / 2 - 200;
-                    startY = screenHeight / 2 - enemySize / 2 - (screenHeight / 16) * random.nextInt(-1, 2);
-                    break;
-            }
-            return new EnemyShooter(startX, startY, enemySize);
         } else {
-            return null;
+            return new EnemyShooter(startX, startY, enemySize);
         }
     }
 

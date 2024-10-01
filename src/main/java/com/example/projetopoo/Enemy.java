@@ -7,20 +7,20 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 
 public class Enemy {
-    private double x;
-    private double y;
-    private double size;
-    private double speed = 1;
+    protected double x;
+    protected double y;
+    protected double size;
+    protected double speed = 1;
 
     protected Image spriteSheet;
-    private int currentFrame = 0;
-    private int frameCount = 4;  // Assumindo 4 frames de animação
-    private int spriteRow = 0;  // Primeira linha do spritesheet
-    private int animationDelay = 10;
-    private int animationTimer = 0;
+    protected int currentFrame = 0;
+    protected int frameCount = 4;  // Assumindo 4 frames de animação
+    protected int spriteRow = 0;  // Primeira linha do spritesheet
+    protected int animationDelay = 10;
+    protected int animationTimer = 0;
     protected Canvas gameCanvas = new Canvas();
 
-    private boolean facingLeft = false;
+    protected boolean facingLeft = false;
 
     public Enemy(double startX, double startY, double size) {
         this.x = startX;
