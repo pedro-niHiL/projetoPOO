@@ -13,7 +13,6 @@ public class EnemyManager {
     private double screenWidth;
     private double screenHeight;
 
-
     public EnemyManager(double screenWidth, double screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -30,14 +29,15 @@ public class EnemyManager {
             spawnTimer = 0;
         }
 
+        List<Enemy> enemiesToRemove = new ArrayList<>();
+        List<Projectile> projectilesToRemove = new ArrayList<>();
+        List<PlayerProjectile> playerProjectilesToRemove = new ArrayList<>();
 
-        Iterator<Enemy> it = enemies.iterator();
-        while (it.hasNext()) {
-            Enemy enemy = it.next();
-            // Movimenta o inimigo em direção ao núcleo
+        for (Enemy enemy : enemies) {
             enemy.moveTowards(core.getX() + core.getSize() / 2, core.getY() + core.getSize() / 2);
-            enemy.shoot(core.getX(),core.getY());
+            enemy.shoot(core.getX(), core.getY());
             enemy.updateProjectiles();
+
             // Verifica colisão com o núcleo
             double dxCore = (core.getX() + core.getSize() / 2) - (enemy.getX() + enemy.getSize() / 2);
             double dyCore = (core.getY() + core.getSize() / 2) - (enemy.getY() + enemy.getSize() / 2);
@@ -45,55 +45,48 @@ public class EnemyManager {
             double coreCollisionDistance = (core.getSize() / 2) + (enemy.getSize() / 2);
 
             if (distanceToCore < coreCollisionDistance) {
-                core.takeDamage(10);  // Núcleo sofre dano
-                it.remove();  // Remove o inimigo após a colisão com o núcleo
-                continue; // Passa para o próximo inimigo
+                core.takeDamage(10);
+                enemiesToRemove.add(enemy);
+                continue;
             }
 
-            if(enemy.getProjectiles() != null){
-                // Verifica colisão dos projéteis com o núcleo
+            if (enemy.getProjectiles() != null) {
                 for (Projectile p : enemy.getProjectiles()) {
-                    double dxProjCore= (core.getX() + core.getSize() / 2) - (p.getX() + p.getSize() / 2);
+                    double dxProjCore = (core.getX() + core.getSize() / 2) - (p.getX() + p.getSize() / 2);
                     double dyProjCore = (core.getY() + core.getSize() / 2) - (p.getY() + p.getSize() / 2);
                     double distanceToCore2 = Math.sqrt(dxProjCore * dxProjCore + dyProjCore * dyProjCore);
                     double projCollisionDistance = (core.getSize() / 2) + (p.getSize() / 2);
                     if (distanceToCore2 < projCollisionDistance) {
-                        core.takeDamage(10);  // Jogador perde 10 de vida
-                        enemy.getProjectiles().remove(p);
-                        continue;
+                        core.takeDamage(10);
+                        projectilesToRemove.add(p);
                     }
                 }
             }
 
-            //Disparo inimigo
             for (PlayerProjectile p : player.getProjectiles()) {
-                double dxProjPlayerEnemy= (enemy.getX() + enemy.getSize() / 2) - (p.getX() + p.getSize() / 2);
+                double dxProjPlayerEnemy = (enemy.getX() + enemy.getSize() / 2) - (p.getX() + p.getSize() / 2);
                 double dyProjPlayerEnemy = (enemy.getY() + enemy.getSize() / 2) - (p.getY() + p.getSize() / 2);
                 double distanceToEnemy = Math.sqrt(dxProjPlayerEnemy * dxProjPlayerEnemy + dyProjPlayerEnemy * dyProjPlayerEnemy);
                 double projPlayerCollisionDistance = (enemy.getSize() / 2) + (p.getSize() / 2);
                 if (distanceToEnemy < projPlayerCollisionDistance) {
-                    it.remove();
-                    player.getProjectiles().remove(p);
-                    continue;
+                    enemiesToRemove.add(enemy);
+                    playerProjectilesToRemove.add(p);
+                    break;
                 }
             }
 
-
-            if(enemy.getProjectiles() != null){
-                // Verifica colisão dos projéteis com o jogador
+            if (enemy.getProjectiles() != null) {
                 for (Projectile p : enemy.getProjectiles()) {
-                    double dxProjPlayer= (player.getX() + player.getSize() / 2) - (p.getX() + p.getSize() / 2);
+                    double dxProjPlayer = (player.getX() + player.getSize() / 2) - (p.getX() + p.getSize() / 2);
                     double dyProjPlayer = (player.getY() + player.getSize() / 2) - (p.getY() + p.getSize() / 2);
                     double distanceToPlayer2 = Math.sqrt(dxProjPlayer * dxProjPlayer + dyProjPlayer * dyProjPlayer);
                     double projPlayerCollisionDistance = (player.getSize() / 2) + (p.getSize() / 2);
                     if (distanceToPlayer2 < projPlayerCollisionDistance) {
-                        player.takeDamage(10);  // Jogador perde 10 de vida
-                        enemy.getProjectiles().remove(p);
-                        continue;
+                        player.takeDamage(10);
+                        projectilesToRemove.add(p);
                     }
                 }
             }
-
 
             // Verifica colisão com o jogador
             double dxPlayer = (player.getX() + player.getSize() / 2) - (enemy.getX() + enemy.getSize() / 2);
@@ -102,10 +95,19 @@ public class EnemyManager {
             double playerCollisionDistance = (player.getSize() / 2) + (enemy.getSize() / 2);
 
             if (distanceToPlayer < playerCollisionDistance) {
-                player.takeDamage(10);  // Jogador perde 10 de vida
-                it.remove();  // Remove o inimigo após a colisão com o jogador
+                player.takeDamage(10);
+                enemiesToRemove.add(enemy);
             }
         }
+
+        // Remove inimigos e projéteis após a iteração
+        enemies.removeAll(enemiesToRemove);
+        for (Enemy enemy : enemies) {
+            if (enemy.getProjectiles() != null) {
+                enemy.getProjectiles().removeAll(projectilesToRemove);
+            }
+        }
+        player.getProjectiles().removeAll(playerProjectilesToRemove);
     }
 
     private Enemy createRandomEnemy() {

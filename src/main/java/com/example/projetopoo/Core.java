@@ -11,7 +11,7 @@ public class Core {
     private double y;
 
     //Tamanho e quantidade de vida do núcleo
-    private double size = 100;
+    private double size = 64;
     private int health = 100;
     private Image coreImage;
 
@@ -24,7 +24,7 @@ public class Core {
     public void updatePosition(double screenWidth, double screenHeight) {
         // Posiciona o núcleo no centro da tela
         this.x = (screenWidth - size) / 2;
-        this.y = (screenHeight - size) / 2;
+        this.y = (screenHeight - size) / 2 + 50;
     }
 
     public void draw(GraphicsContext gc) {

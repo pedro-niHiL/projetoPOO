@@ -26,7 +26,7 @@ public class RenderEngine {
 
 
 
-        gc.drawImage(new Image(getClass().getResource("cenario maior.png").toString()),0,0,gameCanvas.getWidth(),gameCanvas.getHeight());
+        gc.drawImage(new Image(getClass().getResource("cenario.png").toString()),0,0,gameCanvas.getWidth(),gameCanvas.getHeight());
 
         core.draw(gc);
 
