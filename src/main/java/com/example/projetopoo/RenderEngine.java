@@ -47,10 +47,10 @@ public class RenderEngine {
     }
 
     private void drawPlayerPoints(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(3,40,200,35);
+        //gc.setFill(Color.BLACK);
+        //gc.fillRect(3,40,200,35);
         gc.setFont(new Font("Arial", 20));
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.RED);
         gc.fillText(String.format("Pontuação: %02d", (int)player.getPoints()),10,70);
     }
 
