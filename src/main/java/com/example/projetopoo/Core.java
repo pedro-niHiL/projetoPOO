@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 public class Core {
     private double x;
     private double y;
-    private double size = 100;
+    private double size = 105;
     private int health = 100;
     private Image spritesheet;
     private int currentFrame = 0;
