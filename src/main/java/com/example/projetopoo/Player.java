@@ -13,10 +13,11 @@ public class Player {
     private double x;
     private double y;
     private final double size = 64; // Tamanho do jogador
-    private final double speed = 2;
+    private double speed = 2;
     private boolean[] keys = new boolean[256];
     private double health; // Vida do jogador
     private ArrayList<PlayerProjectile> playerProjectiles;
+    private double points;
 
     private Image spriteSheet;
     private int currentFrame = 0;
@@ -28,6 +29,8 @@ public class Player {
     private boolean facingLeft = false; // Flag para saber se está virado para a esquerda
     private long lastShotTime = 0;
     private long shotCooldown = 1000;
+    private int lastTimeUpdate = 0;
+    private int lastTimeUpdate1 = 0;
 
     private int animationDelay = 10; // Ajuste de tempo da animação
     private int animationTimer = 0;
@@ -44,13 +47,23 @@ public class Player {
         this.health = 100; // Vida inicial
         this.playerProjectiles = new ArrayList<>();
         this.spriteSheet = new Image(getClass().getResource("spriteSheetPlayer.png").toString()); // Novo spritesheet
+        this.points = 0;
     }
 
-    public void update(double deltaTime, Core core) {
+    public void update(double deltaTime, Core core, double gameTime) {
         isMoving = false;
         double nextX = x;
         double nextY = y;
 
+        if ((int)gameTime/60 > lastTimeUpdate) {
+            if (this.shotCooldown > 1700) {
+                this.lastTimeUpdate = (int) gameTime / 60;
+                this.shotCooldown -= 20 * lastTimeUpdate;
+            }
+            if ((int) gameTime / 120 > lastTimeUpdate1) {
+                this.speed += 2;
+            }
+        }
         shoot(mouseX,mouseY);
         updateProjectiles();
 
@@ -104,6 +117,14 @@ public class Player {
             spriteRow = direction; // Linhas 0, 1, 2 para idle
             currentFrame = idleFrame;
         }
+    }
+
+    public void addingPoints(){
+        if (this.points <= 9999975) this.points += 25;
+    }
+
+    public double getPoints(){
+        return this.points;
     }
 
     private boolean isCollidingWithCore(double nextX, double nextY, Core core) {
@@ -199,6 +220,7 @@ public class Player {
 
 
     public void resetHealth() {
+        this.points = 0;
         this.health = 100;
     }
 

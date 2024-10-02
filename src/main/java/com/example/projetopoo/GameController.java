@@ -66,8 +66,8 @@ public class GameController {
 
     private void update(double deltaTime) {
         try {
-            if (player != null) player.update(deltaTime, core);
-            if (enemyManager != null) enemyManager.update(deltaTime, core, player);
+            if (player != null) player.update(deltaTime, core, gameTime);
+            if (enemyManager != null) enemyManager.update(deltaTime, core, player, gameTime);
             gameTime += deltaTime;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Erro na atualização do estado do jogo", e);

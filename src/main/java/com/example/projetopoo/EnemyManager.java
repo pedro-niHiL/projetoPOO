@@ -12,21 +12,30 @@ public class EnemyManager {
     private double spawnTimer;
     private double screenWidth;
     private double screenHeight;
+    private double lastTimeUpdate;
 
     public EnemyManager(double screenWidth, double screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.enemies = new ArrayList<>();
         this.random = new Random();
-        this.spawnInterval = 4;
+        this.spawnInterval = 3;
         this.spawnTimer = 0;
+        this.lastTimeUpdate = 0;
     }
 
-    public void update(double deltaTime, Core core, Player player) {
+    public void update(double deltaTime, Core core, Player player,double gameTime) {
         spawnTimer += deltaTime;
         if (spawnTimer >= spawnInterval) {
             enemies.add(createRandomEnemy());
             spawnTimer = 0;
+        }
+
+        if ((int)gameTime/120 > lastTimeUpdate){
+            if (spawnTimer != 1) {
+                this.lastTimeUpdate = (int)gameTime / 120;
+                this.spawnInterval -= 1 * lastTimeUpdate;
+            }
         }
 
         List<Enemy> enemiesToRemove = new ArrayList<>();
@@ -71,6 +80,7 @@ public class EnemyManager {
                 if (distanceToEnemy < projPlayerCollisionDistance) {
                     enemiesToRemove.add(enemy);
                     playerProjectilesToRemove.add(p);
+                    player.addingPoints();
                     break;
                 }
             }

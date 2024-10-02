@@ -43,7 +43,17 @@ public class RenderEngine {
         // Desenha o tempo de jogo
         drawGameTime(gc, gameTime);
 
+        drawPlayerPoints(gc);
     }
+
+    private void drawPlayerPoints(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(3,40,200,35);
+        gc.setFont(new Font("Arial", 20));
+        gc.setFill(Color.WHITE);
+        gc.fillText(String.format("Pontuação: %02d", (int)player.getPoints()),10,70);
+    }
+
 
     private void drawHealthBar(GraphicsContext gc) {
         double maxHealth = 100;
