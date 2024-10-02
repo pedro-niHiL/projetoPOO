@@ -64,7 +64,7 @@ Após a criação do projeto JavaFX genérico e a adição da JavaFX como biblio
 
 - [**Pedro R.**](https://github.com/pedro-niHiL)
 - [**Icaro B.**](https://github.com/JonasBrothers12)
-- [**Gustavo S.**](https://github.com/GUS2-SAN)
+- [**Augusto S.**](https://github.com/GUS2-SAN)
 - [**Arthur J.** ](https://github.com/Shawnp138)
 - [**Lucas A.**](https://github.com/lucasandrey1)
 - [**Theófilo P.**](https://github.com/the-theo)
