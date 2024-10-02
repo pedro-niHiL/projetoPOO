@@ -1,11 +1,12 @@
 package com.example.projetopoo;
 
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameController {
+    private static final Logger LOGGER = Logger.getLogger(GameController.class.getName());
 
     private Canvas gameCanvas;
     private Player player;
@@ -14,73 +15,89 @@ public class GameController {
     private PlayerController playerController;
     private EnemyManager enemyManager;
     private RenderEngine renderEngine;
-
-
-    private double gameTime; // Adiciona o campo de tempo de jogo
+    private double gameTime;
 
     public GameController(Canvas gameCanvas) {
         this.gameCanvas = gameCanvas;
     }
 
     public void initialize(Scene scene) {
-        double canvasWidth = gameCanvas.getWidth();
-        double canvasHeight = gameCanvas.getHeight();
+        try {
+            double canvasWidth = gameCanvas.getWidth();
+            double canvasHeight = gameCanvas.getHeight();
 
-        gameCanvas.setOnMouseMoved(event -> {
-            player.setMousePosition(event.getX(), event.getY());
-        });
+            gameCanvas.setOnMouseMoved(event -> {
+                if (player != null) {
+                    player.setMousePosition(event.getX(), event.getY());
+                }
+            });
 
-        player = new Player(500, 500, canvasWidth, canvasHeight);
-        core = new Core(canvasWidth, canvasHeight);
-        enemyManager = new EnemyManager(canvasWidth, canvasHeight);
-        renderEngine = new RenderEngine(gameCanvas, player, core, enemyManager);
+            player = new Player(500, 500, canvasWidth, canvasHeight);
+            core = new Core(canvasWidth, canvasHeight);
+            enemyManager = new EnemyManager(canvasWidth, canvasHeight);
+            renderEngine = new RenderEngine(gameCanvas, player, core, enemyManager);
 
-        // Setup para controle do jogador
-        playerController = new PlayerController(player);
-        playerController.setupKeyHandling(scene);
+            playerController = new PlayerController(player);
+            playerController.setupKeyHandling(scene);
 
+            gameTime = 0;
 
-        
-        gameTime = 0; // Inicia o tempo de jogo
+            gameLoop = new GameLoop(this::gameUpdateCycle);
+            gameLoop.start();
 
-        // Inicia o loop do jogo
-        gameLoop = new GameLoop(() -> {
-            update(1.0 / 60);
-            renderEngine.render(gameTime); // Passa o tempo para ser renderizado
-            checkGameOver();
-        });
-        gameLoop.start();
+            scene.getRoot().requestFocus();
 
-        // Garante que o Canvas tenha o foco
-        scene.getRoot().requestFocus();
+            LOGGER.info("Jogo inicializado com sucesso");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro ao inicializar o jogo", e);
+        }
     }
 
-
+    private void gameUpdateCycle() {
+        try {
+            update(1.0 / 60);
+            renderEngine.render(gameTime);
+            checkGameOver();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro no ciclo de atualização do jogo", e);
+            gameLoop.stop();
+        }
+    }
 
     private void update(double deltaTime) {
-        player.update(deltaTime, core);
-        enemyManager.update(deltaTime, core, player);
-        gameTime += deltaTime; // Incrementa o tempo de jogo
+        try {
+            if (player != null) player.update(deltaTime, core);
+            if (enemyManager != null) enemyManager.update(deltaTime, core, player);
+            gameTime += deltaTime;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro na atualização do estado do jogo", e);
+        }
     }
 
     private void checkGameOver() {
-        // Verifica se o jogador ou núcleo perdeu toda a vida
-        if (player.getHealth() <= 0 || core.getHealth() <= 0) {
-            gameLoop.stop();
-            restartGame();  // Reinicia o jogo sem alterar a cena
+        try {
+            if ((player != null && player.getHealth() <= 0) || (core != null && core.getHealth() <= 0)) {
+                gameLoop.stop();
+                restartGame();
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro ao verificar fim de jogo", e);
         }
     }
 
     public void restartGame() {
+        try {
+            if (player != null) player.resetHealth();
+            if (core != null) core.resetHealth();
+            if (enemyManager != null) enemyManager.clearEnemies();
 
-        player.resetHealth();
-        core.resetHealth();
-        enemyManager.clearEnemies();
+            gameTime = 0;
 
-        gameTime = 0; // Reinicia o tempo de jogo
+            gameLoop.start();
 
-        // Reinicia o loop de jogo
-        gameLoop.start();
-
+            LOGGER.info("Jogo reiniciado");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erro ao reiniciar o jogo", e);
+        }
     }
 }

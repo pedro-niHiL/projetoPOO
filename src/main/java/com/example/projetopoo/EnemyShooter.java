@@ -19,14 +19,34 @@ public class EnemyShooter extends Enemy {
 
     @Override
     public void moveTowards(double targetX, double targetY) {
+        double dx = targetX - (x + size / 2);
+        double dy = targetY - (y + size / 2);
+        double distance = Math.sqrt(dx * dx + dy * dy);
 
+        if (distance == 200) speed = 0;
+
+        if (distance > 0) {
+            x += (dx / distance) * speed;
+            y += (dy / distance) * speed;
+
+            // Atualiza a direção do inimigo
+            facingLeft = dx < 0;
+        }
+
+        // Atualiza a animação
+        animationTimer++;
+        if (animationTimer >= animationDelay) {
+            currentFrame = (currentFrame + 1) % frameCount;
+            animationTimer = 0;
+        }
     }
 
-    public void shoot(double coreX,double coreY) {
+    @Override
+    public void shoot(double coreX, double coreY) {
         if (System.currentTimeMillis() - lastShotTime >= shotCooldown) {
-            // Cria um novo projétil em direção ao jogador
-            double dx =  coreX - (getX() + getSize() / 2);
-            double dy =  coreY - (getY() + getSize() / 2);
+            // Cria um novo projétil em direção ao core
+            double dx = coreX - (getX() + getSize() / 2);
+            double dy = coreY - (getY() + getSize() / 2);
             double magnitude = Math.sqrt(dx * dx + dy * dy);
 
             // Normaliza a direção
@@ -42,6 +62,7 @@ public class EnemyShooter extends Enemy {
         }
     }
 
+    @Override
     public void updateProjectiles() {
         Iterator<Projectile> iterator = projectiles.iterator();
         while (iterator.hasNext()) {
@@ -50,13 +71,14 @@ public class EnemyShooter extends Enemy {
         }
     }
 
+    @Override
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
     }
 
     @Override
     public void draw(GraphicsContext gc) {
-        // Desenha o inimigo como antes
+        // Desenha o inimigo
         super.draw(gc);
 
         // Desenha os projéteis disparados pelo inimigo
